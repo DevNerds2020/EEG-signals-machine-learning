@@ -52,48 +52,55 @@ def main():
     # skewness = np.mean((x - mean) ** 3, axis=1) / np.mean((x - mean) ** 2, axis=1) ** 1.5
     # kurtosis = np.mean((x - mean) ** 4, axis=1) / np.mean((x - mean) ** 2, axis=1) ** 2
     std = np.std(x, axis=1)
-    #add entropy feature
+    # add entropy feature
     # entropy = np.sum(-x * np.log(x), axis=1)
-    #add correlation feature
+    # add correlation feature
     # corr = np.corrcoef(x)
-    #add covariance feature
+    # add covariance feature
     # cov = np.cov(x)
-    #add frequency domain features
-    fft = np.fft.fft(x)
-    fft_abs = np.abs(fft)
-    fft_mean = np.mean(fft_abs, axis=1)
-    fft_var = np.var(fft_abs, axis=1)
-    #innovative feature which is when the signal have too many downs and ups
-    #this feature is the number of ups and downs => code
-    ups = np.sum(np.diff(np.sign(x)) != 0, axis=1) / 2
-    #add the new features to the dataset
-    newX = np.concatenate((var.reshape(-1, 1), mean.reshape(-1, 1), max.reshape(-1, 1), min.reshape(-1, 1), median.reshape(-1, 1), std.reshape(-1, 1), fft_mean.reshape(-1, 1), fft_var.reshape(-1, 1), ups.reshape(-1, 1)), axis=1)
-    #train test split
+    # add frequency domain features
+#     fft = np.fft.fft(x)
+    # fft_abs = np.abs(fft)
+    # fft_mean = np.mean(fft_abs, axis=1)
+    # fft_var = np.var(fft_abs, axis=1)
+    # innovative feature which is when the signal have too many downs and ups
+    # this feature is the number of ups and downs => code
+    # ups = np.sum(np.diff(np.sign(x)) != 0, axis=1) / 2
+    #LBP based feature
+
+#     lbp = np.array([local_binary_pattern(x[ind, :], 8, 1, method='uniform') for ind in range(x.shape[0])])
+    #time domain feature
+
+    # add the new features to the dataset
+    newX = np.concatenate((var.reshape(-1, 1), mean.reshape(-1, 1), max.reshape(-1, 1), min.reshape(-1, 1),
+                           median.reshape(-1, 1), std.reshape(-1, 1)), axis=1)
+    # train test split
     x_train, x_test, y_train, y_test = train_test_split(newX, y, random_state=seed, test_size=0.2)
     # svc
     custom_clf = SVC(kernel='linear')
     custom_clf.fit(x_train, y_train)
     y_pred = custom_clf.predict(x_test)
-    print("###=>>>>>(svc)((accuracy_score)-(recall_score)-(precision_score))",accuracy_score(y_test, y_pred), recall_score(y_test, y_pred), precision_score(y_test, y_pred))
-    #get accuracy with k-fold cross validation k=5
+    print("###=>>>>>(svc)((accuracy_score)-(recall_score)-(precision_score))", accuracy_score(y_test, y_pred),
+          recall_score(y_test, y_pred), precision_score(y_test, y_pred))
+    # get accuracy with k-fold cross validation k=5
     scores = cross_val_score(custom_clf, newX, y, cv=5)
     print("&&&=> k-fold cross validation accuracy: %0.2f (+/- %0.2f)" % (scores.mean(), scores.std() * 2))
-    
 
     # random forest
     custom_clf = RandomForestClassifier(n_estimators=100, max_depth=2, random_state=0)
     custom_clf.fit(x_train, y_train)
     y_pred = custom_clf.predict(x_test)
-    print("###=>>>>>(random forest)((accuracy_score)-(recall_score)-(precision_score))",accuracy_score(y_test, y_pred), recall_score(y_test, y_pred), precision_score(y_test, y_pred))
+    print("###=>>>>>(random forest)((accuracy_score)-(recall_score)-(precision_score))", accuracy_score(y_test, y_pred),
+          recall_score(y_test, y_pred), precision_score(y_test, y_pred))
     scores = cross_val_score(custom_clf, newX, y, cv=5)
     print("&&&=> k-fold cross validation accuracy: %0.2f (+/- %0.2f)" % (scores.mean(), scores.std() * 2))
-    
 
     # knn
     custom_clf = KNeighborsClassifier(n_neighbors=3)
     custom_clf.fit(x_train, y_train)
     y_pred = custom_clf.predict(x_test)
-    print("###=>>>>>(knn)((accuracy_score)-(recall_score)-(precision_score))",accuracy_score(y_test, y_pred), recall_score(y_test, y_pred), precision_score(y_test, y_pred))
+    print("###=>>>>>(knn)((accuracy_score)-(recall_score)-(precision_score))", accuracy_score(y_test, y_pred),
+          recall_score(y_test, y_pred), precision_score(y_test, y_pred))
     scores = cross_val_score(custom_clf, newX, y, cv=5)
     print("&&&=> k-fold cross validation accuracy: %0.2f (+/- %0.2f)" % (scores.mean(), scores.std() * 2))
     x_train, x_test, y_train, y_test = train_test_split(x, y, random_state=seed, test_size=0.2)
@@ -102,7 +109,6 @@ def main():
 
     clf = SVC(kernel='linear')
     clf.fit(x_train, y_train)
-
 
     y_pred = clf.predict(x_test)
 
