@@ -1,3 +1,4 @@
+# main code is in pre-proc.ipynb ***************************
 import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, recall_score, precision_score
