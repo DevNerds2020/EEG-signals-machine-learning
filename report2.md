@@ -42,3 +42,7 @@ ab cd
 
 ab cd e
 و دقت هر کدام را مشاهده میکنیم
+
+
+
+https://github.com/DevNerds2020/EEG-signals-machine-learning
